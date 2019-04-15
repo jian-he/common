@@ -60,6 +60,26 @@ type ControllerInterface interface {
 
 	// Returns the Job from API server
 	GetJobFromAPIClient(namespace, name string) (metav1.Object, error)
+
+	// Returns the default container in pod. e.g. tensorflow
+	GetDefaultContainerName() string
+
+	// Returns the default container port name. e.g. tfjob-port
+	GetDefaultContainerPortName() string
+
+	// CreatePod creates the pod
+	CreatePod(job interface{}, podTemplate *v1.PodTemplateSpec) error
+
+	// DeletePod deletes the pod
+	DeletePod(job interface{}, pod *v1.Pod) error
+
+	// SetClusterSpec sets the cluster spec for the pod. e.g set the TF_CONFIG in the pod env
+	SetClusterSpec(job interface{}, podTemplate *v1.PodTemplateSpec, rtype, index string) error
+
+	// Returns if this replica type with index specified is a master role.
+	// MasterRole pod will have "job-role=master" set in its label
+	IsMasterRole(replicas map[commonv1.ReplicaType]*commonv1.ReplicaSpec, rtype commonv1.ReplicaType, index int) bool
+
 }
 
 // JobControllerConfiguration contains configuration of operator.
